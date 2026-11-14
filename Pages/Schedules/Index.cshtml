@@ -1,0 +1,43 @@
+@page
+@model CleanRoute.Pages.Schedules.IndexModel
+@{
+    ViewData["Title"] = "Schedules";
+}
+<div class="heading-row">
+    <div>
+        <p class="eyebrow">COLLECTION SCHEDULE</p>
+        <h1>Scheduled collections</h1>
+        <p>@(User.IsInRole("Admin") ? "All assigned collection visits." : "Your assigned collection visits.")</p>
+    </div>
+</div>
+<section class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Resident</th>
+                    <th>Address</th>
+                    <th>Route</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var schedule in Model.Schedules)
+                {
+                    <tr>
+                        <td>@schedule.ScheduledFor.ToString("dd MMM, h:mm tt")</td>
+                        <td>@schedule.CollectionRequest.Resident.FullName</td>
+                        <td>@schedule.CollectionRequest.CollectionAddress</td>
+                        <td>@schedule.RouteArea</td>
+                        <td><span
+                            class="status @schedule.CollectionRequest.Status.ToString().ToLowerInvariant()">@schedule.CollectionRequest.Status</span>
+                        </td>
+                        <td><a asp-page="/Requests/Details" asp-route-id="@schedule.CollectionRequestId">View</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

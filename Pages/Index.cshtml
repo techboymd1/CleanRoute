@@ -1,0 +1,65 @@
+@page
+@model CleanRoute.Pages.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <section class="hero">
+        <p class="eyebrow">WASTE COLLECTION, ORGANIZED</p>
+        <h1>Give every pickup a clear route.</h1>
+        <p>CleanRoute connects residents, collection teams, and local administrators in one simple workspace.</p><a
+        class="button" asp-page="/Account/Login">Sign in to continue</a>
+    </section>
+}
+else
+{
+    <div class="heading-row">
+        <div>
+            <p class="eyebrow">DASHBOARD</p>
+            <h1>Hello, @User.Identity!.Name</h1>
+            <p>Here is today’s collection overview.</p>
+        </div>@if (User.IsInRole("Resident")) {
+        <a class="button" asp-page="/Requests/Create">Request collection</a>
+    }
+</div>
+<section class="metric-grid">
+    <article><span>Pending requests</span><strong>@Model.PendingRequests</strong></article>
+    <article><span>Scheduled today</span><strong>@Model.TodaySchedules</strong></article>
+    <article><span>Completed this month</span><strong>@Model.CompletedThisMonth</strong></article>
+</section>
+<section class="panel">
+    <div class="panel-header">
+        <h2>Upcoming collections</h2><a asp-page="/Requests/Index">View all</a>
+    </div>
+    @if (Model.UpcomingRequests.Count == 0)
+    {
+        <p class="empty-state">No collection requests to show yet.</p>
+    }
+    else
+    {
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Resident</th>
+                        <th>Waste type</th>
+                        <th>Preferred date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>@foreach (var request in Model.UpcomingRequests) {
+                    <tr>
+                        <td>@request.Resident.FullName</td>
+                        <td>@request.WasteType</td>
+                        <td>@request.PreferredDate.ToString("ddd, dd MMM")</td>
+                        <td><span class="status @request.Status.ToString().ToLowerInvariant()">@request.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+</section>
+}

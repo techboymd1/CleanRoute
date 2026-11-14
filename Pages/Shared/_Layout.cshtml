@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | CleanRoute</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" asp-page="/Index"><span>●</span> CleanRoute</a>
+        <nav aria-label="Main navigation">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-page="/Index">Dashboard</a><a asp-page="/Requests/Index">Requests</a>
+                @if (User.IsInRole("Collector") || User.IsInRole("Admin"))
+                {
+                    <a asp-page="/Schedules/Index">Schedules</a>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-page="/Reports/Index">Reports</a><a
+                    asp-page="/Admin/Users/Index">Users</a>
+                }
+                <form method="post" asp-page="/Account/Logout"><button class="link-button">Sign out</button></form>
+            }
+            else
+            {
+
+                <a asp-page="/Account/Register">Create account</a><a class="button button-small"
+                                                                     asp-page="/Account/Login">Sign in</a>
+            }
+        </nav>
+    </header>
+    <main class="page-shell">@RenderBody()</main>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

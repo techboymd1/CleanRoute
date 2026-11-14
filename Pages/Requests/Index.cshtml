@@ -1,0 +1,51 @@
+@page
+@model CleanRoute.Pages.Requests.IndexModel
+@{
+    ViewData["Title"] = "Collection requests";
+}
+<div class="heading-row">
+    <div>
+        <p class="eyebrow">COLLECTION REQUESTS</p>
+        <h1>Requests</h1>
+        <p>Track every pickup from request to completion.</p>
+    </div>@if (User.IsInRole("Resident")) {
+    <a class="button" asp-page="Create">New request</a>
+}
+</div>
+<section class="panel">
+    @if (Model.Requests.Count == 0)
+    {
+        <p class="empty-state">There are no requests here yet.</p>
+    }
+    else
+    {
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Resident</th>
+                        <th>Type</th>
+                        <th>Preferred date</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model.Requests)
+                    {
+                        <tr>
+                            <td>#CR-@request.Id.ToString("D4")</td>
+                            <td>@request.Resident.FullName</td>
+                            <td>@request.WasteType</td>
+                            <td>@request.PreferredDate.ToString("dd MMM yyyy")</td>
+                            <td><span class="status @request.Status.ToString().ToLowerInvariant()">@request.Status</span></td>
+                            <td><a asp-page="Details" asp-route-id="@request.Id">View</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

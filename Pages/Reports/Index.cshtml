@@ -1,0 +1,34 @@
+@page
+@model CleanRoute.Pages.Reports.IndexModel
+@{
+    ViewData["Title"] = "Reports";
+}
+<div class="heading-row">
+    <div>
+        <p class="eyebrow">OPERATIONS REPORT</p>
+        <h1>Collection performance</h1>
+        <p>Live summary of activity in CleanRoute.</p>
+    </div>
+</div>
+<section class="metric-grid">
+    <article><span>Total requests</span><strong>@Model.TotalRequests</strong></article>
+    <article><span>Collection rate</span><strong>@Model.CollectionRate%</strong></article>
+    <article><span>Active collectors</span><strong>@Model.ActiveCollectors</strong></article>
+</section>
+<section class="detail-grid">
+    <article class="panel">
+        <h2>Requests by waste type</h2>
+        <div class="bar-list">@foreach (var item in Model.ByWasteType) {
+            <div>
+                <div class="bar-label"><span>@item.Name</span><strong>@item.Count</strong></div>
+                <div class="bar"><i style="width:@item.Percent%"></i></div>
+            </div>
+        }
+    </div>
+</article>
+<article class="panel">
+    <h2>How to use this report</h2>
+    <p>Review pending requests before assigning routes, and use the collection rate to spot operational delays.</p>
+    <p class="muted">The numbers update as team members work through requests.</p>
+</article>
+</section>

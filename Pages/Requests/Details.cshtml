@@ -1,0 +1,74 @@
+@page "{id:int}"
+@model CleanRoute.Pages.Requests.DetailsModel
+@{
+    ViewData["Title"] = "Request details";
+}
+<div class="heading-row">
+    <div>
+        <p class="eyebrow">REQUEST #CR-@Model.CollectionRequest.Id.ToString("D4")</p>
+        <h1>Collection details</h1>
+        <p>Submitted @Model.CollectionRequest.CreatedAtUtc.ToLocalTime().ToString("dd MMM yyyy")</p>
+    </div><span
+    class="status large @Model.CollectionRequest.Status.ToString().ToLowerInvariant()">@Model.CollectionRequest.Status</span>
+</div>
+@if (TempData["Success"] is string message)
+{
+    <div class="notice success">@message</div>
+}
+@if (TempData["Error"] is string error)
+{
+    <div class="notice error">@error</div>
+}
+<section class="detail-grid">
+    <article class="panel">
+        <h2>Pickup information</h2>
+        <dl>
+            <dt>Waste type</dt>
+            <dd>@Model.CollectionRequest.WasteType</dd>
+            <dt>Address</dt>
+            <dd>@Model.CollectionRequest.CollectionAddress</dd>
+            <dt>Preferred date</dt>
+            <dd>@Model.CollectionRequest.PreferredDate.ToString("dddd, dd MMMM yyyy")</dd>
+            <dt>Notes</dt>
+            <dd>@(Model.CollectionRequest.Notes ?? "No additional notes")</dd>
+        </dl>
+    </article>
+    <article class="panel">
+        <h2>Schedule</h2>@if (Model.CollectionRequest.Schedule is null) {
+        <p class="empty-state">A collection team will
+            schedule this request shortly.</p>
+        } else
+        {
+
+            <dl>
+                <dt>Collector</dt>
+                <dd>@Model.CollectionRequest.Schedule.Collector.FullName</dd>
+                <dt>Scheduled for</dt>
+                <dd>@Model.CollectionRequest.Schedule.ScheduledFor.ToString("dddd, dd MMM yyyy h:mm tt")</dd>
+                <dt>Route area</dt>
+                <dd>@Model.CollectionRequest.Schedule.RouteArea</dd>
+            </dl>
+        }
+        @if (Model.CanSchedule && Model.CollectionRequest.Status == RequestStatus.Submitted)
+        {
+            <form method="post"
+                  asp-page-handler="Schedule" class="form-stack compact">
+                <h3>Assign a collector</h3><input type="hidden" name="id"
+                                                  value="@Model.CollectionRequest.Id" /><label>Collector<select name="collectorId"
+                                                                              asp-items="Model.CollectorOptions"></select></label><label>Date and time<input name="scheduledFor"
+                                                                                               type="datetime-local"
+                                                                                               value="@DateTime.Today.AddDays(1).AddHours(9).ToString("yyyy-MM-ddTHH:mm")" /></label><label>Route
+                area<input name="routeArea" /></label><button class="button" type="submit">Schedule collection</button>
+            </form>
+        }
+        @if (Model.CanComplete && Model.CollectionRequest.Status == RequestStatus.Scheduled)
+        {
+            <form method="post"
+                  asp-page-handler="Complete" class="form-stack compact"><input type="hidden" name="id"
+                                                                              value="@Model.CollectionRequest.Id" /><label>Completion notes <span
+                class="muted">(optional)</span><textarea name="completionNotes" rows="3"
+                                                         placeholder="For example: collected successfully"></textarea></label><button class="button"
+                                                                                             type="submit" data-confirm="Mark this collection as completed?">Mark as collected</button></form>
+            }
+        </article>
+    </section>

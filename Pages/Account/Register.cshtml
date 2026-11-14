@@ -1,0 +1,23 @@
+@page
+@model CleanRoute.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Create account";
+}
+<section class="auth-card">
+    <p class="eyebrow">RESIDENT ACCOUNT</p>
+    <h1>Create an account</h1>
+    <p>Register to request and follow up on waste collections.</p>
+    <form method="post" class="form-stack">
+        <div asp-validation-summary="ModelOnly" class="validation"></div><label>Full name<input
+        asp-for="Input.FullName" /></label><label>Email<input asp-for="Input.Email"
+                                                              type="email" /></label><label>Phone number<input asp-for="Input.PhoneNumber"
+                                                         type="tel" /></label><label>Home address<textarea asp-for="Input.Address"
+                                                          rows="3"></textarea></label><label>Password<input asp-for="Input.Password"
+                                                          type="password" /></label><label>Confirm password<input asp-for="Input.ConfirmPassword"
+                                                                type="password" /></label><button class="button" type="submit">Create account</button>
+    </form>
+    <p class="hint">Already registered? <a asp-page="Login">Sign in</a>.</p>
+</section>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
